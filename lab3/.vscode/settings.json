@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "assert.h": "c",
+        "defs.h": "c",
+        "random": "c",
+        "sbi.h": "c",
+        "cstdlib": "c",
+        "stdio.h": "c",
+        "memlayout.h": "c"
+    }
+}
