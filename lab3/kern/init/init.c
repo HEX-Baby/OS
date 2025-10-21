@@ -36,6 +36,7 @@ int kern_init(void) {
     intr_enable();  // enable irq interrupt
 
 
+
 //<<<<<<<<<<<<<<<<<<<<  在这里添加测试代码！ >>>>>>>>>>>>>>>>>>>>
 
     // --- 测试断点异常 (Breakpoint Exception) ---
@@ -48,15 +49,13 @@ int kern_init(void) {
 
     // --- 测试非法指令异常 (Illegal Instruction Exception) ---
     // (测试时请注释掉上面的 ebreak 测试代码)
-    // .word 0x00000000 在指令流中强行插入一个全零的字
-    // 在RISC-V中，0x00000000 是一条非法指令
+    // 在RISC-V中 vmret是一条非法指令
     // cprintf("+++ Now triggering an illegal instruction exception! +++\n");
-    // __asm__ volatile(".word 0x00000000");
+    // __asm__ volatile("mret");
     // cprintf("+++ Illegal instruction handled, execution continues. +++\n");
-
+    
     /* do nothing */
-    while (1)
-        ;
+    while (1);
 }
 
 void __attribute__((noinline))
