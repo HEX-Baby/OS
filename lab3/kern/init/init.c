@@ -35,6 +35,25 @@ int kern_init(void) {
     clock_init();   // init clock interrupt
     intr_enable();  // enable irq interrupt
 
+
+//<<<<<<<<<<<<<<<<<<<<  在这里添加测试代码！ >>>>>>>>>>>>>>>>>>>>
+
+    // --- 测试断点异常 (Breakpoint Exception) ---
+    // __asm__ volatile (内联汇编) 用于在C代码中插入汇编指令
+    // ebreak 是一条特殊的指令，它的唯一作用就是触发一个断点异常
+    cprintf("+++ Now triggering a breakpoint exception! +++\n");
+    __asm__ volatile("ebreak");
+    cprintf("+++ Breakpoint exception handled, execution continues. +++\n");
+
+
+    // --- 测试非法指令异常 (Illegal Instruction Exception) ---
+    // (测试时请注释掉上面的 ebreak 测试代码)
+    // .word 0x00000000 在指令流中强行插入一个全零的字
+    // 在RISC-V中，0x00000000 是一条非法指令
+    // cprintf("+++ Now triggering an illegal instruction exception! +++\n");
+    // __asm__ volatile(".word 0x00000000");
+    // cprintf("+++ Illegal instruction handled, execution continues. +++\n");
+
     /* do nothing */
     while (1)
         ;
