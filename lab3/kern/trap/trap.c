@@ -169,7 +169,8 @@ void interrupt_handler(struct trapframe *tf) {
     }
 }
 
-void exception_handler(struct trapframe *tf) {
+void exception_handler(struct trapframe *tf) 
+{
     switch (tf->cause) {
         case CAUSE_MISALIGNED_FETCH:
             break;
@@ -196,7 +197,33 @@ void exception_handler(struct trapframe *tf) {
             */
             cprintf("ebreak caught at 0x%08x\n", tf->epc);
             cprintf("Exception type: breakpoint\n");
-            tf->epc += 4; // 更新 tf->epc 寄存器
+
+            // --- 开始: 判断并输出指令长度的代码 ---
+
+            // 1. 定义一个变量来存储指令长度
+            int length = 0;
+
+            // 2. 从 epc 指向的内存地址读取前 16-bit (2字节) 的指令码
+            //    需要将 uintptr_t 类型的 epc 强制转换为指针类型
+            uint16_t instruction_word = *(uint16_t *)(tf->epc);
+
+            // 3. 检查指令码的最低两位 (LSBs)
+            //    0x3 在二进制中是 0b11
+            if ((instruction_word & 0x3) == 0x3) {
+                // 如果最低两位是 '11'，则是标准的 32-bit (4字节) 指令
+                length = 4;
+            } else {
+                // 如果最低两位不是 '11' (即 00, 01, 10)，则是 16-bit (2字节) 压缩指令
+                length = 2;
+            }
+
+            // 4. 使用 cprintf 输出指令长度
+            cprintf("Instruction Length: %d bytes\n", length);
+
+            // 5. 根据计算出的长度来更新 epc
+            tf->epc += length;
+            
+            // --- 结束: 判断并输出指令长度的代码 --
 
             break;
         case CAUSE_MISALIGNED_LOAD:
